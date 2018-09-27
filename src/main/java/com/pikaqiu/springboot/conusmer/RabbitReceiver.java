@@ -102,7 +102,8 @@ public class RabbitReceiver {
          * 因为一般来时是业务问题 打日志处理
          */
 
-        //手工ACK 重回队列  会被重新推送 建议设置重回次数
+        //手工ACK 重回队列  会被重新推送 如要需要重回建议设置重回次数
+        //会把消息重新添加到队列的尾部 重新推送
         //channel.basicNack(deliveryTag, false,false);
         //channel.basicAck(deliveryTag, false);
 
