@@ -46,7 +46,8 @@ public class RabbitReceiver {
     )
     )
     /**
-     *
+     *重回队列不建议 或者可以设置重回一次
+     * 或者根据日志进行处理
      */
     @RabbitHandler
     public void onMessage(Message message, Channel channel) throws Exception {
@@ -54,7 +55,7 @@ public class RabbitReceiver {
         System.err.println("消费端Payload: " + message.getPayload());
         //获取签收标识deliveryTag
         Long deliveryTag = (Long) message.getHeaders().get(AmqpHeaders.DELIVERY_TAG);
-        //手工ACK              标识         是否批量  是否重回队列
+        //手工ACK（签收）       标识     是否批量  是否重回队列
         //ack false
         channel.basicNack(deliveryTag, false,false);
     }
@@ -85,7 +86,7 @@ public class RabbitReceiver {
     )
     )
     @RabbitHandler
-    public void onOrderMessage(@Payload Order order,
+    public void onOrderMessage(@Payload Order order,//@Payload获取message中的Payload转换成对象
                                Channel channel,
                                @Headers Map<String, Object> headers) throws Exception {
         System.err.println("--------------------------------------");
