@@ -98,7 +98,8 @@ public class RabbitReceiver {
          * nack requeue为false就ack是一样
          * 不ack 就会堆积在broke中 重新启动服务会被重新推送一次
          *
-         * 建议不重回队列也不消息堆积
+         * 建议根据具体问题判断是否需要重回队列
+         * 业务问题时不重回队列也不消息堆积
          * 因为一般来时是业务问题 打日志处理
          */
 
