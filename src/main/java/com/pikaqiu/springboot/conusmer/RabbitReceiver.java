@@ -92,8 +92,19 @@ public class RabbitReceiver {
         System.err.println("--------------------------------------");
         System.err.println("消费端order: " + order.getId());
         Long deliveryTag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
-        //手工ACK
-        channel.basicNack(deliveryTag, false,false);
+        /**
+         * ack就直接消费了
+         * nack requeue为true就会一直推送
+         * nack requeue为false就ack是一样
+         * 不ack 就会堆积在broke中 重新启动服务会被重新推送一次
+         *
+         * 建议不重回队列也不消息堆积
+         * 因为一般来时是业务问题 打日志处理
+         */
+
+        //手工ACK 重回队列  会被重新推送 建议设置重回次数
+        //channel.basicNack(deliveryTag, false,false);
+        //channel.basicAck(deliveryTag, false);
 
         System.out.println(deliveryTag);
     }
