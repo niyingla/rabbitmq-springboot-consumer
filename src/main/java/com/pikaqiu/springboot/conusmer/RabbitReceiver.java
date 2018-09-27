@@ -24,6 +24,8 @@ import com.rabbitmq.client.Channel;
 public class RabbitReceiver {
 
     /**
+     * 指定监听 @RabbitListener
+     * 作为rabbit消息监听方法   @RabbitHandler
      * @param message
      * @param channel
      * @throws Exception
@@ -34,20 +36,27 @@ public class RabbitReceiver {
             value = @Queue(value = "queue-1", durable = "true"),
             //指定exchange
             exchange = @Exchange(value = "exchange-1",
+                    //持久化
                     durable = "true",
+                    //消息类型
                     type = "topic",
                     ignoreDeclarationExceptions = "true"),
             //设置路由key
             key = "springboot.*"
     )
     )
+    /**
+     *
+     */
     @RabbitHandler
     public void onMessage(Message message, Channel channel) throws Exception {
         System.err.println("--------------------------------------");
         System.err.println("消费端Payload: " + message.getPayload());
+        //获取签收标识deliveryTag
         Long deliveryTag = (Long) message.getHeaders().get(AmqpHeaders.DELIVERY_TAG);
-        //手工ACK
-        channel.basicAck(deliveryTag, false);
+        //手工ACK              标识         是否批量  是否重回队列
+        //ack false
+        channel.basicNack(deliveryTag, false,false);
     }
 
 
@@ -83,7 +92,7 @@ public class RabbitReceiver {
         System.err.println("消费端order: " + order.getId());
         Long deliveryTag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
         //手工ACK
-        channel.basicAck(deliveryTag, false);
+        channel.basicNack(deliveryTag, false,false);
 
         System.out.println(deliveryTag);
     }
