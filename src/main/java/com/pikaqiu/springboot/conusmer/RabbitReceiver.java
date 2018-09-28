@@ -88,6 +88,7 @@ public class RabbitReceiver {
     @RabbitHandler
     public void onOrderMessage(@Payload Order order,//@Payload获取message中的Payload转换成对象
                                Channel channel,
+                               //获取消息中的头信息
                                @Headers Map<String, Object> headers) throws Exception {
         System.err.println("--------------------------------------");
         System.err.println("消费端order: " + order.getId());
@@ -107,7 +108,7 @@ public class RabbitReceiver {
         //手工ACK 重回队列  会被重新推送 如要需要重回建议设置重回次数
         //会把消息重新添加到队列的尾部 重新推送
         //channel.basicNack(deliveryTag, false,false);
-        //channel.basicAck(deliveryTag, false);
+        channel.basicAck(deliveryTag, false);
 
         System.out.println(deliveryTag);
     }
